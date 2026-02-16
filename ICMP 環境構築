@@ -1,0 +1,17 @@
+本研究では、ICMP監視を行うために Zabbix公式テンプレート を利用した。
+
+テンプレートは以下の公式リポジトリから取得した：
+
+https://git.zabbix.com/projects/ZBX/repos/zabbix/browse/templates
+
+https://git.zabbix.com/projects/ZBX/repos/zabbix/browse/templates/net/icmp_ping
+
+上記ディレクトリより ICMP関連テンプレートをダウンロードし、ZabbixのWebインターフェースからインポートして使用した。
+
+本テンプレートにより以下の監視を実施した：
+
+ICMP Ping（死活監視）
+
+ICMP応答時間
+
+パケットロス率

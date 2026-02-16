@@ -25,3 +25,6 @@ zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql -u zabbix -p zabb
 A.3.5 サービス起動
 sudo systemctl restart zabbix-server zabbix-agent2 apache2
 sudo systemctl enable zabbix-server zabbix-agent2 apache2
+
+追加コマンド
+sudo apt install git

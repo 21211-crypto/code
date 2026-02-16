@@ -1,0 +1,31 @@
+Tailscale（VPN）構築
+raspberry piのbushにて以下を順番に入れる
+1
+sudo mkdir -p /etc/apt/keyrings
+
+2
+curl -fsSL https://pkgs.tailscale.com/stable/raspbian/buster.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/tailscale-archive-keyring.gpg
+
+3
+echo "deb [signed-by=/etc/apt/keyrings/tailscale-archive-keyring.gpg] https://pkgs.tailscale.com/stable/raspbian buster main" | sudo tee /etc/apt/sources.list.d/tailscale.list
+
+4
+sudo apt update
+
+5
+sudo apt install tailscale
+
+6
+sudo tailscale up
+
+
+1,2,3,4,5,6を順番に入力後以下のこうな文章がでてくる
+To authenticate, visit:
+https://login.tailscale.com/a/xxxxxxxxxxxx  <-- このURLをコピー
+
+
+tailscaleのシステム停止方法と再起動方法
+
+sudo systemctl stop tailscaled　停止
+
+sudo systemctl start tailscaled　再起動

@@ -1,0 +1,27 @@
+Zabbix serverの構築
+
+1.リポジトリ追加
+wget https://repo.zabbix.com/zabbix/7.0/debian/pool/main/z/zabbix-release/zabbix-release_7.0-5+debian12_all.deb
+sudo dpkg -i zabbix-release_7.0-5+debian12_all.deb
+sudo apt update
+
+A.3.2 パッケージインストール
+sudo apt install -y zabbix-server-mysql zabbix-frontend-php \
+zabbix-apache-conf zabbix-sql-scripts zabbix-agent2 \
+apache2 mariadb-server mariadb-client
+
+A.3.3 データベース作成
+sudo mysql -u root -p
+
+CREATE DATABASE zabbix CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+CREATE USER 'zabbix'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON zabbix.* TO 'zabbix'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+
+A.3.4 スキーマ投入
+zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql -u zabbix -p zabbix
+
+A.3.5 サービス起動
+sudo systemctl restart zabbix-server zabbix-agent2 apache2
+sudo systemctl enable zabbix-server zabbix-agent2 apache2

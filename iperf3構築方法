@@ -1,0 +1,60 @@
+iperf3 インストール(ubuntu)
+通信速度を測定する為には2点間（サーバーとクライアント）にそれぞれiperf3をインストールします。
+
+
+sudo apt install iperf3
+
+iperf3 --version
+iperf 3.9 (cJSON 1.7.13)
+
+サーバー側にはZabbix Agentは必要ありませんが、iperf3をサーバーモードで動作させます。
+
+sudo nano /etc/systemd/system/iperf3.service
+----------------------------------------------
+# /etc/systemd/system/iperf3.service
+# User service: $HOME/.config/systemd/user/iperf3.service
+
+[Unit]
+Description=iperf3 server
+After=syslog.target network.target auditd.service
+
+[Service]
+ExecStart=/usr/bin/iperf3 -s
+
+[Install]
+WantedBy=multi-user.target
+----------------------------------------------
+
+sudo systemctl enable iperf3.service
+sudo systemctl start iperf3.service
+
+Zabbix speedtest-lan
+クライアント側のZabbix Agentのホストにspeedtest-lanの設定ファイルを設置
+
+
+git clone https://git.cdp.li/polcape/zabbix.git
+cd zabbix/zabbix-speedtest-lan
+sudo mkdir -p /etc/zabbix/script
+sudo cp speedtest-lan.sh /etc/zabbix/script
+
+設定ファイルにiperf3サーバーを記載して設定
+sudo nano /etc/zabbix/script/speedtest-lan.sh
+-------------------------------------------------------------
+IPERF_NUMBER=1 # 測定数
+IPERF_IP[0]="server-web"    # iperf3 Server ipアドレス番号
+IPERF_NAME[0]="Server Web"  # iperf3 Server ホスト名
+IPERF_TR_DL[0]="10"
+IPERF_TR_UL[0]="10"
+--------------------------------------------------------------
+
+Zabbix Agentのホストにspeedtest-lanのスクリプトの実行設定
+sudo chmod +x /etc/zabbix/script/speedtest-lan.sh
+sudo cp speedtest-lan.service speedtest-lan.timer /etc/systemd/system
+sudo systemctl enable --now speedtest-lan.timer
+sudo cp speedtest-lan.cron /etc/cron.d
+sudo mkdir -p /etc/zabbix/zabbix_agentd.d
+sudo cp speedtest-lan.conf /etc/zabbix/zabbix_agentd.d
+sudo systemctl restart zabbix-agent
+
+
+Zabbix Serverの設定画面でZabbix Agentホストに「zabbix/zabbix-speedtest-lan/template_speedtest-lan.xml」テンプレートを追加します。
